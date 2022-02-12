@@ -1,0 +1,21 @@
+defaults:
+  flow:
+    create_folds: True
+    training: True
+    testing: False
+
+
+num_of_folds: 5
+
+model:
+  weight_path: weights/
+  lr: 0.01
+
+paths:
+  data_path: data/
+  csv_path: data/train_df.csv
+  train_csv: data/train.csv
+  test_csv: data/test.csv
+  sample_sub: data/sample_submission.csv
+
+class_names: [blues, classical, country, disco, hiphop, jazz, metal, pop, reggae, rock]

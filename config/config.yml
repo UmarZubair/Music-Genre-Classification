@@ -12,10 +12,8 @@ model:
   lr: 0.01
 
 paths:
-  data_path: data/
-  csv_path: data/train_df.csv
-  train_csv: data/train.csv
-  test_csv: data/test.csv
-  sample_sub: data/sample_submission.csv
+  data_path: data/audio/
+  train_csv_path: data/train_metadata.csv
+  test_csv_path: data/test_metadata.csv
 
 class_names: [blues, classical, country, disco, hiphop, jazz, metal, pop, reggae, rock]

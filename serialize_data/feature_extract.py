@@ -10,7 +10,7 @@ def extract_mel_band_energies(audio_file: np.ndarray,
                               sr: Optional[int] = cfg['feature_extract']['sr'],
                               n_fft: Optional[int] = cfg['feature_extract']['n_fft'],
                               hop_length: Optional[int] = cfg['feature_extract']['hop_length'],
-                              n_mels: Optional[int] = cfg['feature_extract']['n_mels']) \
+                              n_mels: Optional[int] = cfg['feature_extract']['n_mels'])\
                             -> np.ndarray:
                               
     """Extracts and returns the mel-band energies from the `audio_file` audio file.

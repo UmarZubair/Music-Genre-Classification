@@ -75,4 +75,5 @@ def get_audio_file_data(audio_file: str) \
 
 def add_targets_to_df(df):
     df['target'] = one_hot_encode(df).tolist()
+    df['target'] = [','.join(map(str, l)) for l in df['target']]
     return df

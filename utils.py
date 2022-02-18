@@ -55,7 +55,7 @@ def serialize_features_and_classes(features_and_classes: MutableMapping[str, Uni
     :type features_and_classes: dict[str, numpy.ndarray|int]
     """
     try:
-       pickle_out = open(f_name.replace('.wav', '.pickle'),"wb")
+       pickle_out = open(f_name,"wb")
        dump(features_and_classes, pickle_out)
        pickle_out.close()
     except EOFError as e:

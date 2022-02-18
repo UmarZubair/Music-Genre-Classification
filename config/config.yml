@@ -17,3 +17,10 @@ paths:
   test_csv_path: data/test_metadata.csv
 
 class_names: [blues, classical, country, disco, hiphop, jazz, metal, pop, reggae, rock]
+
+feature_extract: 
+  sr: 44100
+  n_fft: 1024
+  hop_length: 512
+  n_mels: 40
+  

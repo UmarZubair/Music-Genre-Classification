@@ -2,13 +2,17 @@ import numpy as np
 from typing import Optional
 from librosa.filters import mel
 from librosa.core import load as lb_load, stft
+from utils import read_yaml
+
+cfg = read_yaml()
 
 def extract_mel_band_energies(audio_file: np.ndarray,
-                              sr: Optional[int] = 44100,
-                              n_fft: Optional[int] = 1024,
-                              hop_length: Optional[int] = 512,
-                              n_mels: Optional[int] = 40) \
+                              sr: Optional[int] = cfg['feature_extract']['sr'],
+                              n_fft: Optional[int] = cfg['feature_extract']['n_fft'],
+                              hop_length: Optional[int] = cfg['feature_extract']['hop_length'],
+                              n_mels: Optional[int] = cfg['feature_extract']['n_mels']) \
                             -> np.ndarray:
+                              
     """Extracts and returns the mel-band energies from the `audio_file` audio file.
 
     :param audio_file: Path of the audio file.

@@ -1,13 +1,13 @@
 defaults:
   serialize_data: False
   train: True
-  evaluate: True
+  evaluate: False
   device: cuda
 
 folds:
   num_folds: 10
   fold_for_testing: 9
-  train_folds: 1
+  train_folds: 5
 
 train:
   weight_path: weights/
@@ -15,7 +15,7 @@ train:
   batch_size: 4
   epochs: 50
   lowest_val_loss: 1e10
-  patience: 3
+  patience: 1
 
 model:
   conv1_in_channel: 1
@@ -41,7 +41,7 @@ paths:
   train_feature_dir: data/train_features
   test_feature_dir: data/test_features
   weights_path: weights/
-  best_weight_path: weights/fold_0_2.029_model.pth
+  best_weight_path: weights/fold_1_model.pth
 
 class_names: [blues, classical, country, disco, hiphop, jazz, metal, pop, reggae, rock]
 

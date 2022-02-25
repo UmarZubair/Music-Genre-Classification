@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-def main(cfg, device):
+def train(cfg, device):
     print('\nStarting training!\n')
     train_df = load_csv(cfg['paths']['train_csv_path'])
 
@@ -48,14 +48,18 @@ def main(cfg, device):
                 patience_counter = 0
                 print('Val loss improved. Saving weights')
                 loss = np.round(np.array(val_loss),3)
-                best_path = cfg['paths']['weights_path'] + f"fold_{fold}_{loss}_model.pth"
+                #best_path = cfg['paths']['weights_path'] + f"fold_{fold + 1}_{loss}_model.pth"
+                best_path = cfg['paths']['weights_path'] + f"fold_{fold + 1}_model.pth"
                 torch.save(net.state_dict(), best_path)
             else:
                 patience_counter += 1
                 if patience_counter > cfg['train']['patience']:
                     print('Early stopping. Exitting training. ')
                     break   
-    return best_path
+                
+        # Evaluate the fold
+        evaluate(cfg, best_path, device)
+
 
 def train_one_epoch(data_loader, optimizer, criterion, net, device):
     running_loss = 0
@@ -172,17 +176,16 @@ if __name__ == '__main__':
     cfg = read_yaml()
     device = cfg['defaults']['device']
     print('\nDevice on: {}'.format(device))
-    best_weight_path = cfg['paths']['best_weight_path']
     
     if cfg['defaults']['serialize_data']:
         clear_feature_folders(cfg)
         serialize_data(cfg)
         
     if cfg['defaults']['train']:
-        best_weight_path = main(cfg, device)
+        train(cfg, device)
     
     if cfg['defaults']['evaluate']:
-        evaluate(cfg, best_weight_path, device)
+        evaluate(cfg, cfg['paths']['best_weight_path'], device)
     
     #testing()  
     #test_2(cfg)

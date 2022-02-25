@@ -18,9 +18,8 @@ def main(cfg):
                                     batch_size=cfg['train']['batch_size'], 
                                     shuffle=True)
         
-
     for fold in range(1):
-        print(f'Starting Fold: {fold + 1}')
+        print('\nStarting Fold: {}'.format(fold + 1))
         df_val = train_df[train_df['fold'] == fold].drop(columns = ['fold'])
         df_train = train_df[train_df['fold'] != fold].drop(columns = ['fold'])
 
@@ -36,6 +35,7 @@ def main(cfg):
                                     shuffle=False)
         
         device = cfg['defaults']['device']
+        print('\nDevice on: {}'.format(device))
         net = Net()
         net.to(device).train()
         optimizer = torch.optim.Adam(net.parameters(),
@@ -43,15 +43,19 @@ def main(cfg):
         criterion = torch.nn.CrossEntropyLoss()
         
         for epoch in range(cfg['train']['epochs']):
-            print('Epoch: {}\n'.format(epoch + 1))
-            train_loss = train_one_epoch(train_dataloader, optimizer, criterion, net, device)
-            val_loss = validate_one_epoch(val_dataloader, criterion, net, device)
-            print('Acc Loss: {}\tVar Loss: {}'.format(train_loss, val_loss))
+            print('\nEpoch: {}\n'.format(epoch + 1))
+            train_loss, train_accuracy = train_one_epoch(train_dataloader, optimizer, criterion, net, device)
+            val_loss, val_accuracy= validate_one_epoch(val_dataloader, criterion, net, device)
+            print('Train loss: {}\tTrain accuracy: {}\nValidation loss: {}\tValidation accuracy: {}'.format(train_loss, 
+                                                                                                      train_accuracy, 
+                                                                                                      val_loss,
+                                                                                                      val_accuracy))
             
-
 def train_one_epoch(data_loader, optimizer, criterion, net, device):
     running_loss = 0
     dataset_size = 0
+    correct = 0
+    
     for batch_idx, (data, target) in tqdm(enumerate(data_loader), total=len(data_loader)):
         if device != 'cpu':
             data = data.to(device)
@@ -66,16 +70,21 @@ def train_one_epoch(data_loader, optimizer, criterion, net, device):
         
         running_loss += loss.item() * batch_size
         dataset_size += batch_size
+        predicted = torch.argmax(pred, 1)
+        correct += predicted.eq(torch.argmax(target, 1)).sum().item()
         
+    
+    epoch_accuracy = 100 * correct / len(data_loader.dataset)
     epoch_loss = running_loss / len(data_loader.dataset)
-    return epoch_loss
+    return epoch_loss, epoch_accuracy
         
 def validate_one_epoch(data_loader, criterion, net, device):
     net.eval()
     running_loss = 0
     preds = []
     targets = []
-    for batch_idx, (data, target) in tqdm(enumerate(data_loader)):
+    correct = 0
+    for batch_idx, (data, target) in tqdm(enumerate(data_loader), total=len(data_loader)):
         if device != 'cpu':
             data = data.to(device)
             target = target.to(device)
@@ -87,11 +96,14 @@ def validate_one_epoch(data_loader, criterion, net, device):
         preds.append(pred.view(-1).cpu().detach().numpy())
         targets.append(target.view(-1).cpu().detach().numpy())
         running_loss += loss.item() * batch_size
-        
+        predicted = torch.argmax(pred, 1)
+        correct += predicted.eq(torch.argmax(target, 1)).sum().item()
+    
     targets = np.concatenate(targets)
     preds = np.concatenate(preds)
+    epoch_accuracy = np.round(np.array(100 * correct / len(data_loader.dataset)),3)   
     epoch_loss = running_loss / len(data_loader.dataset)
-    return epoch_loss
+    return epoch_loss, epoch_accuracy
             
         
 def testing():

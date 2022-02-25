@@ -33,7 +33,8 @@ def extract_mel_band_energies(audio_file: np.ndarray,
         y=audio_file,
         n_fft=n_fft,
         hop_length=hop_length)
-
+        
     mel_filters = mel(sr=sr, n_fft=n_fft, n_mels=n_mels)
-
-    return np.dot(mel_filters, np.abs(spec) ** 2)
+    spec = np.dot(mel_filters, np.abs(spec) ** 2)
+     
+    return spec[:, :cfg['feature_extract']['frames']]

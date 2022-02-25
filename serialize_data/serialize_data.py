@@ -52,7 +52,7 @@ def serialize_data(cfg):
                 os.mkdir(cfg['paths']['root_path'] + mode + '_features')
                 
             feature_path = cfg['paths']['root_path'] + mode + '_features/' + file_name
-            df['feature_path'][i] = feature_path
+            df.loc[i,'feature_path'] = feature_path
             serialize_features_and_classes(features_and_classes, feature_path)
         
         # Update csv and save

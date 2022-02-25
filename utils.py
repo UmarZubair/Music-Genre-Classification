@@ -1,3 +1,4 @@
+from os import rmdir
 import pandas as pd
 import yaml
 from sklearn.model_selection import StratifiedKFold
@@ -8,6 +9,8 @@ import numpy as np
 import glob
 from librosa.core import load as lb_load
 from pathlib import Path
+import os
+import shutil
 
 def create_folds(df, num_of_folds):
     cfg = read_yaml()
@@ -77,3 +80,12 @@ def add_targets_to_df(df):
     df['target'] = one_hot_encode(df).tolist()
     df['target'] = [','.join(map(str, l)) for l in df['target']]
     return df
+
+def clear_feature_folders(cfg):
+    if os.path.exists(cfg['paths']['train_feature_dir']):
+        print('Clearing train feature folders')
+        shutil.rmtree(Path(cfg['paths']['train_feature_dir']))
+        
+    if os.path.exists(cfg['paths']['train_feature_dir']):
+        print('Clearing test feature folders')
+        shutil.rmtree(Path(cfg['paths']['test_feature_dir']))
